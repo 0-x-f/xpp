@@ -4,7 +4,7 @@
 
 #include "../iwindow.h"
 #include "../uiwindow.h"
-#include "../uibutton.h"
+#include "../uibuttons.h"
 
 void foo(IWindow* sender, const XEvent& event, void* data) {
 	UIButton* b = (UIButton*)sender;
@@ -38,11 +38,11 @@ int main(int argc, char** argv) {
 		.y = 50,
 		.width = 250,
 		.height = 50,
-		.borderWidth = 1,
-		.border = 0xFFFAAF,
+		.borderWidth = 0,
+		.border = 0,
 		.background = 0xFFFAAF,
 	};
-	UIButton button(bConfig);
+	UISimpleButton button(bConfig);
 	
 	printf("Main window: %d\nButton: %d\n",
 		mainWindow.GetWindow(), button.GetWindow());
