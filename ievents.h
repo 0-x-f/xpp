@@ -32,4 +32,13 @@ class IKeyPressEvent {
 		XCallback mKeyPressEvent;
 };
 
+class IExposeEvent {
+	public:
+		virtual void SetExpose(XCallback& callback);
+	public:
+		virtual void OnExpose(IWindow* sender, XEvent& event);
+	protected:
+		XCallback mExposeEvent;
+};
+
 #endif // UI_EVENTS_H
