@@ -11,11 +11,13 @@ class UIButton : public IWindow, public IButtonPressEvent, public IButtonRelease
 	public:
 		UIButton(XConfig& window);
 	public:
+		virtual void SetText(const std::string& text);
+	public:
 		virtual void Event(XEvent& event);
 	private:
 		std::string mText;
 };
 
-#endif // XLIB_UI_H
+#endif // UI_BUTTON_H
 
 
