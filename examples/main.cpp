@@ -3,15 +3,18 @@
 #include <iostream>
 
 #include "../iwindow.h"
-#include "../uiwindow.h"
-#include "../uibuttons.h"
+#include "../windows/uiwindow.h"
+#include "../buttons/uibutton.h"
 
 void foo(IWindow* sender, const XEvent& event, void* data) {
 	UIButton* b = (UIButton*)sender;
 
-	printf("Window: %d, (X, Y) = (%d, %d) | %s\n",
-		b->GetWindow(), b->GetX(), b->GetY(),
-		static_cast<char*>(data));
+	printf("KeyEvent: %d | ButtonEvent: %d\n",
+		event.xkey.type,
+		event.xbutton.type
+	);
+
+	printf("%s\n", static_cast<char*>(data));
 }
 
 int main(int argc, char** argv) {
@@ -42,23 +45,26 @@ int main(int argc, char** argv) {
 		.border = 0,
 		.background = 0xFFFAAF,
 	};
-	UISimpleButton button(bConfig);
-	
-	printf("Main window: %d\nButton: %d\n",
-		mainWindow.GetWindow(), button.GetWindow());
+	UIButton button(bConfig);
 
-	XCallback callback = {
-		.data = (void*)("Hello, Button!"),
+	XCallback callback1 = {
+		.data = (void*)("Hello, Key!"),
 		.callback = foo,
 	};
 
 	XCallback callback2 = {
+		.data = (void*)("Hello, Button!"),
+		.callback = foo,
+	};
+
+	XCallback callback3 = {
 		.data = (void*)("Buy, Button!"),
 		.callback = foo,
 	};
 
-	button.SetButtonPress(callback);	
-	button.SetButtonRelease(callback2);
+	mainWindow.SetKeyPress(callback1);
+	button.SetButtonPress(callback2);
+	button.SetButtonRelease(callback3);
 
 	mainWindow.Show();
 	button.Show();
@@ -69,7 +75,11 @@ int main(int argc, char** argv) {
 
 		XEvent event = { 0 };
 		XNextEvent(wConfig.display, &event);
-		
+
+		if (event.type == Expose) {
+			button.SetText("quit");
+		}
+
 		const Window eWindow = event.xany.window;
 
 		if (eWindow == button.GetWindow()) {
