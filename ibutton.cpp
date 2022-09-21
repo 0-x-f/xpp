@@ -13,41 +13,6 @@ IButton::IButton(XConfig& button) : IWindow(button) {
 
 void IButton::SetText(const std::string& text) {
 	this->mText = text;
-
-	XGCValues values;
-	XColor colorScreenDef, colorExactDef;
-
-	XAllocNamedColor(
-		this->mConfig.display,
-		XDefaultColormap(
-			this->mConfig.display,
-			DefaultScreen(this->mConfig.display)
-		),
-		"red",
-		&colorScreenDef,
-		&colorExactDef
-	);
-
-	values.foreground = colorScreenDef.pixel;
-
-	GC ctx = XCreateGC(
-		this->mConfig.display,
-		this->mWindow,
-		GCForeground | GCBackground,
-		&values
-	);
-
-//	XDrawString16(
-	XDrawImageString(
-		this->mConfig.display,
-		this->mWindow,
-		ctx,
-//		DefaultGC(this->mConfig.display, DefaultScreen(this->mConfig.display)),
-		this->mConfig.x,
-		this->mConfig.y,
-		this->mText.c_str(),
-		this->mText.length()
-	);
 }
 
 void IButton::Event(XEvent& event) {

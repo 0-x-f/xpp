@@ -11,9 +11,8 @@ class UIButton : public IButton {
 		virtual void OnButtonRelease(IWindow* sender, XEvent& event) override;
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:
-		virtual void Event(XEvent& event) override;
-	public:
-		virtual void DrawShadow(Window& window, XConfig& config);
+		virtual void DrawShadow();
+		virtual void DrawText();
 	private:
 		GC gc_lightgray;
 		GC gc_darkgray;

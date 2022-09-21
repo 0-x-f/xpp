@@ -9,12 +9,39 @@
 void foo(IWindow* sender, const XEvent& event, void* data) {
 	UIButton* b = (UIButton*)sender;
 
-	printf("KeyEvent: %d | ButtonEvent: %d\n",
-		event.xkey.type,
-		event.xbutton.type
-	);
+	switch (event.type) {
+		case ButtonPress: {
+			switch (event.xbutton.button) {
+				case Button1: {
+					printf("Left mouse button press ");
+				} break;
+				case Button3: {
+					printf("Right mouse button press ");
+				} break;
+				default: {
+					printf("Other mouse button press ");
+				} break;
+			}
+		} break;
+		case ButtonRelease: {
+			switch (event.xbutton.button) {
+				case Button1: {
+					printf("Left mouse button release ");
+				} break;
+				case Button3: {
+					printf("Right mouse button release ");
+				} break;
+				default: {
+					printf("Other mouse button release ");
+				} break;
+			}
+		} break;
+		case KeyPress: {
+			printf("Key '%d' press ", event.xkey.keycode);
+		} break;
+	}
 
-	printf("%s\n", static_cast<char*>(data));
+	printf("| Message: %s\n", static_cast<char*>(data));
 }
 
 int main(int argc, char** argv) {
@@ -46,6 +73,7 @@ int main(int argc, char** argv) {
 		.background = 0xFFFAAF,
 	};
 	UIButton button(bConfig);
+	button.SetText("Open fridge");
 
 	XCallback callback1 = {
 		.data = (void*)("Hello, Key!"),
@@ -75,10 +103,6 @@ int main(int argc, char** argv) {
 
 		XEvent event = { 0 };
 		XNextEvent(wConfig.display, &event);
-
-		if (event.type == Expose) {
-			button.SetText("quit");
-		}
 
 		const Window eWindow = event.xany.window;
 

@@ -51,42 +51,93 @@ void UIButton::OnButtonPress(IWindow* sender, XEvent& event) {
 	this->IButton::OnButtonPress(sender, event);
 }
 
-void UIButton::DrawShadow(Window& window, XConfig& config) {
+void UIButton::DrawShadow() {
+	XDrawLine(
+		this->mConfig.display,
+		this->mWindow,
+		this->gc_lightgray,
+		0,
+		0,
+		this->mConfig.width - 1,
+		0
+	);
 
-	XDrawLine(config.display, window, this->gc_lightgray,
-		0, 0, config.width - 1, 0);
+	XDrawLine(
+		this->mConfig.display,
+		this->mWindow,
+		this->gc_lightgray,
+		0,
+		0,
+		0,
+		this->mConfig.height - 1
+	);
 
-	XDrawLine(config.display, window, this->gc_lightgray,
-		0, 0, 0, config.height - 1);
+	XDrawLine(
+		this->mConfig.display,
+		this->mWindow,
+		this->gc_darkgray,
+		this->mConfig.width - 1,
+		0,
+		this->mConfig.width - 1,
+		this->mConfig.height - 1
+	);
 
-	XDrawLine(config.display, window, this->gc_darkgray,
-		config.width - 1, 0, config.width - 1, config.height - 1);
+	XDrawLine(
+		this->mConfig.display,
+		this->mWindow,
+		this->gc_darkgray,
+		0,
+		this->mConfig.height - 1,
+		this->mConfig.width - 1,
+		this->mConfig.height - 1
+	);
+}
 
-	XDrawLine(config.display, window, this->gc_darkgray,
-		0, config.height - 1, config.width - 1, config.height - 1);
+void UIButton::DrawText() {
+	XGCValues values;
+	XColor colorScreenDef, colorExactDef;
+
+	XAllocNamedColor(
+		this->mConfig.display,
+		XDefaultColormap(
+			this->mConfig.display,
+			DefaultScreen(this->mConfig.display)
+		),
+		"black",
+		&colorScreenDef,
+		&colorExactDef
+	);
+
+	values.foreground = colorScreenDef.pixel;
+	values.background = this->mConfig.background;
+
+	GC ctx = XCreateGC(
+		this->mConfig.display,
+		this->mWindow,
+		GCForeground | GCBackground,
+		&values
+	);
+
+	XDrawImageString(
+		this->mConfig.display,
+		this->mWindow,
+		ctx,
+		this->mConfig.x / 2,
+		this->mConfig.y / 2,
+		this->mText.c_str(),
+		this->mText.length()
+	);
 }
 
 void UIButton::OnButtonRelease(IWindow* sender, XEvent& event) {
-	this->DrawShadow(this->mWindow, this->mConfig);
+	this->DrawShadow();
 	this->IButton::OnButtonRelease(sender, event);
 }
 
 void UIButton::OnExpose(IWindow* sender, XEvent& event) {
-	this->DrawShadow(this->mWindow, this->mConfig);
-}
-
-void UIButton::Event(XEvent& event) {
-	switch (event.type) {
-		case ButtonPress: {
-			this->OnButtonPress(this, event);
-		} break;
-		case ButtonRelease: {
-			this->OnButtonRelease(this, event);
-		} break;
-		case Expose: {
-			this->OnExpose(this, event);
-		} break;
-	}
+	this->DrawShadow();
+	this->DrawText();
+	this->IButton::OnExpose(sender, event);
 }
 
 
