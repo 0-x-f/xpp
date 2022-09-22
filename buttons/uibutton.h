@@ -16,6 +16,10 @@ class UIButton : public IButton {
 	private:
 		GC mColorLightgray;
 		GC mColorDarkgray;
+	private:
+		XFontStruct* mFont;
+	private:
+		GC mContext;
 };
 
 #endif // UI_BUTTON_H

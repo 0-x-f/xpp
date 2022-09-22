@@ -1,7 +1,5 @@
 #include "uibutton.h"
 
-#include <cstring>
-
 UIButton::UIButton(XConfig& config) : IButton(config) {
 	// Screen color contains RGB values provided by the hardware
 	// Exact color contains exact RGB values
@@ -10,6 +8,12 @@ UIButton::UIButton(XConfig& config) : IButton(config) {
 	XColor		screenDarkGrayColor, exactDarkGrayColor;
 	XGCValues	lightGrayValues;
 	XGCValues	darkGrayValues;
+
+	XColor			screenTextColor, exactTextColor;
+	XGCValues		textColorValues;
+	Font			font;
+
+	// Allocations for button shadow
 
 	XAllocNamedColor(
 		this->mConfig.display,
@@ -47,6 +51,35 @@ UIButton::UIButton(XConfig& config) : IButton(config) {
 		this->mConfig.parent,
 		GCForeground,
 		&darkGrayValues
+	);
+
+	// Allocations for button text
+
+	XAllocNamedColor(
+		this->mConfig.display,
+		XDefaultColormap(
+			this->mConfig.display,
+			DefaultScreen(this->mConfig.display)
+		),
+		"#000000",
+		&screenTextColor,
+		&exactTextColor
+	);
+
+	this->mFont = XLoadQueryFont(
+		this->mConfig.display,
+		"6x13"
+	);
+
+	textColorValues.foreground = exactTextColor.pixel;
+	textColorValues.background = this->mConfig.background;
+	textColorValues.font = this->mFont->fid;
+
+	this->mContext = XCreateGC(
+		this->mConfig.display,
+		this->mWindow,
+		GCForeground | GCBackground | GCFont,
+		&textColorValues
 	);
 }
 
@@ -112,48 +145,16 @@ void UIButton::DrawShadow(GC& tcolor, GC& bcolor) {
 }
 
 void UIButton::DrawText() {
-	XGCValues values;
-	XColor screenTextColor, exactTextColor;
-	XFontStruct* fontStruct;
-	Font font;
-
-	XAllocNamedColor(
-		this->mConfig.display,
-		XDefaultColormap(
-			this->mConfig.display,
-			DefaultScreen(this->mConfig.display)
-		),
-		"black",
-		&screenTextColor,
-		&exactTextColor
-	);
-
-	fontStruct = XLoadQueryFont(
-		this->mConfig.display,
-		"6x13"
-	);
-
-	values.foreground = exactTextColor.pixel;
-	values.background = this->mConfig.background;
-	values.font = fontStruct->fid;
-
-	GC ctx = XCreateGC(
-		this->mConfig.display,
-		this->mWindow,
-		GCForeground | GCBackground | GCFont,
-		&values
-	);
-
 	int xCenter = (this->mConfig.width - (6 * this->mText.length())) / 2;
 	int yCenter = (
 		this->mConfig.height
-		- (fontStruct->ascent + fontStruct->descent)) / 2
-		+ fontStruct->ascent;
+		- (this->mFont->ascent + this->mFont->descent)) / 2
+		+ this->mFont->ascent;
 
 	XDrawImageString(
 		this->mConfig.display,
 		this->mWindow,
-		ctx,
+		this->mContext,
 		xCenter,
 		yCenter,
 		this->mText.c_str(),
