@@ -1,5 +1,7 @@
 #include "uibutton.h"
 
+#include <cstring>
+
 UIButton::UIButton(XConfig& config) : IButton(config) {
 	// Screen color contains RGB values provided by the hardware
 	// Exact color contains exact RGB values
@@ -27,7 +29,7 @@ UIButton::UIButton(XConfig& config) : IButton(config) {
 			DefaultScreen(this->mConfig.display)
 		),
 		"#888888",
-		&screenLightGrayColor,
+		&screenDarkGrayColor,
 		&exactDarkGrayColor
 	);
  
@@ -111,7 +113,9 @@ void UIButton::DrawShadow(GC& tcolor, GC& bcolor) {
 
 void UIButton::DrawText() {
 	XGCValues values;
-	XColor colorScreenDef, colorExactDef;
+	XColor screenTextColor, exactTextColor;
+	XFontStruct* fontStruct;
+	Font font;
 
 	XAllocNamedColor(
 		this->mConfig.display,
@@ -120,26 +124,38 @@ void UIButton::DrawText() {
 			DefaultScreen(this->mConfig.display)
 		),
 		"black",
-		&colorScreenDef,
-		&colorExactDef
+		&screenTextColor,
+		&exactTextColor
 	);
 
-	values.foreground = colorScreenDef.pixel;
+	fontStruct = XLoadQueryFont(
+		this->mConfig.display,
+		"6x13"
+	);
+
+	values.foreground = exactTextColor.pixel;
 	values.background = this->mConfig.background;
+	values.font = fontStruct->fid;
 
 	GC ctx = XCreateGC(
 		this->mConfig.display,
 		this->mWindow,
-		GCForeground | GCBackground,
+		GCForeground | GCBackground | GCFont,
 		&values
 	);
+
+	int xCenter = (this->mConfig.width - (6 * this->mText.length())) / 2;
+	int yCenter = (
+		this->mConfig.height
+		- (fontStruct->ascent + fontStruct->descent)) / 2
+		+ fontStruct->ascent;
 
 	XDrawImageString(
 		this->mConfig.display,
 		this->mWindow,
 		ctx,
-		this->mConfig.x / 2,
-		this->mConfig.y / 2,
+		xCenter,
+		yCenter,
 		this->mText.c_str(),
 		this->mText.length()
 	);

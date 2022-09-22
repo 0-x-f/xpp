@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
 		.background = 0xFFFAAF,
 	};
 	UIButton button(bConfig);
-	button.SetText("Open fridge");
+	button.SetText("Hello, World!");
 
 	XCallback callback1 = {
 		.data = (void*)("Hello, Key!"),
