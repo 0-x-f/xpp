@@ -11,11 +11,11 @@ class UIButton : public IButton {
 		virtual void OnButtonRelease(IWindow* sender, XEvent& event) override;
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:
-		virtual void DrawShadow();
+		virtual void DrawShadow(GC& tcolor, GC& bcolor);
 		virtual void DrawText();
 	private:
-		GC gc_lightgray;
-		GC gc_darkgray;
+		GC mColorLightgray;
+		GC mColorDarkgray;
 };
 
 #endif // UI_BUTTON_H

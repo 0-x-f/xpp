@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
 #include <iostream>
 
 #include "../iwindow.h"
@@ -11,7 +12,7 @@ void foo(IWindow* sender, const XEvent& event, void* data) {
 
 	switch (event.type) {
 		case ButtonPress: {
-			switch (event.xbutton.button) {
+				switch (event.xbutton.button) {
 				case Button1: {
 					printf("Left mouse button press ");
 				} break;
