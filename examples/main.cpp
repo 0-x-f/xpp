@@ -6,6 +6,7 @@
 #include "../iwindow.h"
 #include "../windows/uiwindow.h"
 #include "../buttons/uibutton.h"
+#include "../labels/uilabel.h"
 
 void foo(IWindow* sender, const XEvent& event, void* data) {
 	UIButton* b = (UIButton*)sender;
@@ -65,16 +66,30 @@ int main(int argc, char** argv) {
 	XConfig bConfig = {
 		.display = wConfig.display,
 		.parent = mainWindow.GetWindow(),
-		.x = 50,
-		.y = 50,
-		.width = 250,
-		.height = 50,
+		.x = 16,
+		.y = 16,
+		.width = mainWindow.GetWidth() - 32,
+		.height = 32,
 		.borderWidth = 0,
 		.border = 0,
 		.background = 0xFFFAAF,
 	};
 	UIButton button(bConfig);
 	button.SetText("Hello, World!");
+
+	XConfig lConfig = {
+		.display = wConfig.display,
+		.parent = mainWindow.GetWindow(),
+		.x = mainWindow.GetX(),
+		.y = mainWindow.GetY(),
+		.width = mainWindow.GetWidth(),
+		.height = 13,
+		.borderWidth = 0,
+		.border = 0,
+		.background = 0xFFFFFF,
+	};
+	UILabel label(lConfig);
+	label.SetText("Hello, World!");
 
 	XCallback callback1 = {
 		.data = (void*)("Hello, Key!"),
@@ -97,6 +112,7 @@ int main(int argc, char** argv) {
 
 	mainWindow.Show();
 	button.Show();
+	label.Show();
 
 	int quit = 0;
 
@@ -107,10 +123,12 @@ int main(int argc, char** argv) {
 
 		const Window eWindow = event.xany.window;
 
-		if (eWindow == button.GetWindow()) {
-			button.Event(event);
-		} else if (eWindow == mainWindow.GetWindow()) {
+		if (eWindow == mainWindow.GetWindow()) {
 			mainWindow.Event(event);
+		} else if (eWindow == button.GetWindow()) {
+			button.Event(event);
+		} else if (eWindow == label.GetWindow()) {
+			label.Event(event);
 		}
 	}
 

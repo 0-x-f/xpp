@@ -1,4 +1,3 @@
-#include "xconfig.h"
 #include "iwindow.h"
 
 IWindow::IWindow(XConfig& window) {
@@ -32,6 +31,14 @@ int IWindow::GetY() const {
 	return this->mConfig.y;
 }
 
+unsigned int IWindow::GetWidth() const {
+	return this->mConfig.width;
+}
+
+unsigned int IWindow::GetHeight() const {
+	return this->mConfig.height;
+}
+
 void IWindow::Show() {
 	XMapWindow(this->mConfig.display, this->mWindow);
 }
@@ -39,3 +46,5 @@ void IWindow::Show() {
 void IWindow::Hide() {
 	XUnmapWindow(this->mConfig.display, this->mWindow);
 }
+
+

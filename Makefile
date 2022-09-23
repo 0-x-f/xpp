@@ -1,11 +1,18 @@
 CC = g++
 CFLAGS = -Wextra -lX11
-# SOURCES = $(wildcard *.cpp) $(wildcard buttons/*.cpp) $(wildcard events/*.cpp) $(wildcard windows/*.cpp) examples/main.cpp
 SOURCES = $(wildcard *.cpp) $(wildcard */*.cpp)
+OBJECTS = obj/$(SOURCES:.cpp=.o)
 TARGET = examples/example
 
-build:
-	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCES)
+all: build
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+build: $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $@
 run:
 	./$(TARGET)
+clean: $(OBJECTS)
+	rm -rf $@
+
 

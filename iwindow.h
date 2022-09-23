@@ -19,10 +19,11 @@ class IWindow {
 	public:
 		virtual int GetX() const;
 		virtual int GetY() const;
+		virtual unsigned int GetWidth() const;
+		virtual unsigned int GetHeight() const;
 	protected:
 		Window mWindow;
 		XConfig mConfig;
-
 };
 
 using Callback = std::function<void(IWindow*, XEvent&, void*)>;
@@ -32,5 +33,6 @@ struct XCallback {
 	Callback	callback;
 };
 
-
 #endif // IWINDOW_H
+
+
