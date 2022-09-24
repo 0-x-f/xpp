@@ -1,18 +1,26 @@
 CC = g++
-CFLAGS = -Wextra -lX11
+
+CFLAGS = -Wextra -Wall -lX11
+LFLAGS = $(CFLAGS) -fPIC
+
 SOURCES = $(wildcard *.cpp) $(wildcard */*.cpp)
-OBJECTS = obj/$(SOURCES:.cpp=.o)
+LIB_SOURCES = $(wildcard *.cpp) $(filter-out $(wildcard examples/*.cpp), $(wildcard */*.cpp))
+
+OBJECTS = $(addprefix obj/, $(notdir $(SOURCES:.cpp=.o)))
+LIB_OBJECTS = $(addprefix obj/, $(notdir $(LIB_SOURCES:.cpp=.o)))
+
 TARGET = examples/example
+LIB = libxpp.so
 
-all: build
+vpath %.cpp $(dir $(LIB_SOURCES))
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-build: $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $@
+lib: $(LIB_OBJECTS)
+	$(CC) $(LFLAGS) -shared -o $(LIB) $(LIB_OBJECTS)
+build:
+	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCES)
+obj/%.o: %.cpp
+	$(CC) $(LFLAGS) -c $< -o $@
 run:
 	./$(TARGET)
-clean: $(OBJECTS)
-	rm -rf $@
-
-
+clean:
+	rm -rf $(OBJECTS) $(TARGET)
