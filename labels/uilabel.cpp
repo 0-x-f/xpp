@@ -6,7 +6,6 @@ UILabel::UILabel(XConfig& config) : ILabel(config) {
 
 	XColor			screenTextColor, exactTextColor;
 	XGCValues		textColorValues;
-	Font			font;
 
 	// Allocations for label text
 

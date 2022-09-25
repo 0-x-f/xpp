@@ -11,7 +11,6 @@ UIButton::UIButton(XConfig& config) : IButton(config) {
 
 	XColor			screenTextColor, exactTextColor;
 	XGCValues		textColorValues;
-	Font			font;
 
 	// Allocations for button shadow
 
