@@ -9,6 +9,8 @@ class UILabel : public ILabel {
 	public:
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:
+		virtual void SetText(const std::string& text) override;
+	public:
 		virtual void DrawText();
 	private:
 		XFontStruct* mFont;

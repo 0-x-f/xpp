@@ -38,9 +38,15 @@ UILabel::UILabel(XConfig& config) : ILabel(config) {
 }
 
 void UILabel::OnExpose(IWindow* sender, XEvent& event) {
-	this->DrawText();
-
 	this->ILabel::OnExpose(sender, event);
+
+	this->DrawText();
+}
+
+void UILabel::SetText(const std::string& text) {
+	this->ILabel::SetText(text);
+
+	this->DrawText();
 }
 
 void UILabel::DrawText() {
@@ -49,6 +55,8 @@ void UILabel::DrawText() {
 		this->mConfig.height
 		- (this->mFont->ascent + this->mFont->descent)) / 2
 		+ this->mFont->ascent;
+
+	XClearWindow(this->mConfig.display, this->mWindow);
 
 	XDrawImageString(
 		this->mConfig.display,
