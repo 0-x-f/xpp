@@ -83,22 +83,28 @@ UIButton::UIButton(XConfig& config) : IButton(config) {
 }
 
 void UIButton::OnButtonPress(IWindow* sender, XEvent& event) {
-	this->DrawShadow(this->mColorDarkgray, this->mColorLightgray);
-
 	this->IButton::OnButtonPress(sender, event);
+
+	this->DrawShadow(this->mColorDarkgray, this->mColorLightgray);
 }
 
 void UIButton::OnButtonRelease(IWindow* sender, XEvent& event) {
-	this->DrawShadow(this->mColorLightgray, this->mColorDarkgray);
-
 	this->IButton::OnButtonRelease(sender, event);
+
+	this->DrawShadow(this->mColorLightgray, this->mColorDarkgray);
 }
 
 void UIButton::OnExpose(IWindow* sender, XEvent& event) {
-	this->DrawShadow(this->mColorLightgray, this->mColorDarkgray);
-	this->DrawText();
-
 	this->IButton::OnExpose(sender, event);
+
+	this->DrawText();
+	this->DrawShadow(this->mColorLightgray, this->mColorDarkgray);
+}
+
+void UIButton::SetText(const std::string& text) {
+	this->IButton::SetText(text);
+
+	this->DrawText();
 }
 
 void UIButton::DrawShadow(GC& tcolor, GC& bcolor) {
@@ -149,6 +155,8 @@ void UIButton::DrawText() {
 		this->mConfig.height
 		- (this->mFont->ascent + this->mFont->descent)) / 2
 		+ this->mFont->ascent;
+
+	XClearWindow(this->mConfig.display, this->mWindow);
 
 	XDrawImageString(
 		this->mConfig.display,

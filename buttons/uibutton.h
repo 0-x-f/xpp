@@ -11,6 +11,8 @@ class UIButton : public IButton {
 		virtual void OnButtonRelease(IWindow* sender, XEvent& event) override;
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:
+		virtual void SetText(const std::string& text) override;
+	public:
 		virtual void DrawShadow(GC& tcolor, GC& bcolor);
 		virtual void DrawText();
 	private:
