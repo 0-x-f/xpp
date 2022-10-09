@@ -13,6 +13,15 @@ struct PlotIn {
 	double	start;
 	double	stop;
 	double	step;
+	
+	unsigned int Count() {
+		return (unsigned int)(stop-start/step);
+	}
+};
+
+struct Point {
+	unsigned int x;
+	unsigned int y;
 };
 
 using PlotFunc = std::function<double(const double x)>;
