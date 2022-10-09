@@ -8,11 +8,12 @@ Thereforce it's updates may suddenly end ☹️
 - [x] Create simple/custom windows with custom events
 - [x] Create buttons with text (and centring)
 - [x] Handling your events
-- [ ] Create input text
+- [x] Create input text
+- [ ] Create plot
 
-# 🖼 Screenshots 
+# 🖼 Screenshot
 
-![Simple button](https://github.com/0-x-f/xpp/blob/master/screenshots/simple-button.png)
+![Example](https://github.com/0-x-f/xpp/blob/master/screenshots/example.png)
 
 # 🔗 Links
 
