@@ -1,10 +1,9 @@
-
 #ifndef IPLOT_H
 #define IPLOT_H
   
 #include <vector>
 #include <functional>
-
+#include <iostream>
 #include "iwindow.h"
 #include "events/iexpose.h"
 #include "xconfig.h"
@@ -15,13 +14,12 @@ struct PlotIn {
 	double	step;
 	
 	unsigned int Count() {
-		return (unsigned int)(stop-start/step);
+		return (unsigned int)((stop-start)/step) + 1;
 	}
-};
 
-struct Point {
-	unsigned int x;
-	unsigned int y;
+	double GetX(unsigned int i) {
+		return start + step * i;
+	}
 };
 
 using PlotFunc = std::function<double(const double x)>;
