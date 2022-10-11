@@ -14,7 +14,7 @@ struct PlotIn {
 	double	step;
 	
 	unsigned int Count() {
-		return (unsigned int)((stop-start)/step) + 1;
+		return (unsigned int)abs(((stop-start)/step)) + 1;
 	}
 
 	double GetX(unsigned int i) {
