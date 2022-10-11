@@ -32,6 +32,11 @@ class UIPlot :
 	public:
 		virtual void DrawPlot() override;
 	private:
+		void DrawCoordinatePlane();
+		void DrawFunction();
+	private:
+		void DrawLine(const UIPoint& a, const UIPoint& b, const GC& gc);
+	private:
 		void CalculateFunction();
 		void CalculateGeometry();
 		inline double CalculateUnitSegment(
@@ -39,10 +44,6 @@ class UIPlot :
 			double b, 
 			unsigned int length
 		);
-	private:
-		void DrawLine(const UIPoint& a, const UIPoint& b);
-	private:
-		unsigned short int padding;
 	protected:
 		std::vector<double> mValues;
 	protected:
@@ -51,9 +52,12 @@ class UIPlot :
 	protected:
 		UIPoint mCenter;
 	protected:
-		unsigned mUnitSeg;
+		double mUnitSeg;
 	protected:
-		GC mContext;
+		GC mCoordinateAxesGC;
+		GC mFunctionColorGC; 
+	private:
+		unsigned short int padding;
 };
 
 #endif // PLOT_H

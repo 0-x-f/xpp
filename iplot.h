@@ -3,22 +3,28 @@
   
 #include <vector>
 #include <functional>
-#include <iostream>
+#include <cmath>
+
 #include "iwindow.h"
 #include "events/iexpose.h"
 #include "xconfig.h"
+
+#define EXP	0.00001
 
 struct PlotIn {
 	double	start;
 	double	stop;
 	double	step;
-	
+
 	unsigned int Count() {
 		return (unsigned int)abs(((stop-start)/step)) + 1;
 	}
 
 	double GetX(unsigned int i) {
-		return start + step * i;
+
+		double x = start + step * i;
+
+		return fabs(x) < EXP ? 0 : x;
 	}
 };
 
