@@ -11,7 +11,7 @@ Thereforce it's updates may suddenly end ☹️
 - [x] Create input text
 - [ ] Create plot
 
-# 🖼 Screenshot
+# 🖼 Screenshots
 
 ![Example](https://github.com/0-x-f/xpp/blob/master/screenshots/example.png)
 
