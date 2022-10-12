@@ -1,6 +1,7 @@
 #include "uitextbox.h"
 
-UITextBox::UITextBox(XConfig& config) : ITextBox(config) {
+UITextBox::UITextBox(XConfig& config, ETextBoxType type)
+	: ITextBox(config, type) {
 	// Screen color contains RGB values provided by the hardware
 	// Exact color contains exact RGB values
 
@@ -105,21 +106,34 @@ void UITextBox::OnKeyPress(IWindow* sender, XEvent& event) {
 					}
 				} break;
 				default: {
-					this->mContent.push_back(c);
+					switch (this->mType) {
+						case ETextBoxType::Text:
+						case ETextBoxType::Password: {
+							this->mContent.push_back(c);
+						} break;
+						case ETextBoxType::Number: {
+							if ((c >= '0' && c <= '9')
+								|| (c == '.')
+								|| (c == ',')) {
+
+								this->mContent.push_back(c);
+							}
+						} break;
+					}
 				} break;
 			}
 		} break;
 	}
 
 	this->DrawContent();
-	this->DrawShadow(this->mColorLightgray, this->mColorDarkgray);
+	this->DrawShadow(this->mColorDarkgray, this->mColorLightgray);
 }
 
 void UITextBox::OnExpose(IWindow* sender, XEvent& event) {
 	this->ITextBox::OnExpose(sender, event);
 
 	this->DrawContent();
-	this->DrawShadow(this->mColorLightgray, this->mColorDarkgray);
+	this->DrawShadow(this->mColorDarkgray, this->mColorLightgray);
 }
 
 void UITextBox::SetContent(const std::string& content) {
@@ -137,14 +151,22 @@ void UITextBox::DrawContent() {
 
 	XClearWindow(this->mConfig.display, this->mWindow);
 
+	std::string tmp;
+
+	if (ETextBoxType::Password == this->mType) {
+		tmp = std::string(this->mContent.length(), '*');
+	} else {
+		tmp = std::string(this->mContent);
+	}
+
 	XDrawImageString(
 		this->mConfig.display,
 		this->mWindow,
 		this->mContext,
 		x,
 		yCenter,
-		this->mContent.c_str(),
-		this->mContent.length()
+		tmp.c_str(),
+		tmp.length()
 	);
 }
 
