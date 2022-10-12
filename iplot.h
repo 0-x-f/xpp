@@ -41,14 +41,11 @@ class IPlot :
 	public:
 		virtual void SetFunc(PlotFunc pf);
 		virtual void SetX(const PlotIn& pi);
-	public:
-		virtual void OnExpose(IWindow* sender, XEvent& event) override;
-	public:
-		virtual void Event(XEvent& event) override;
 	protected:
 		PlotFunc mPlotFunc;
 		PlotIn mPlotIn;
 };
 
 #endif // IPLOT_H
+
 

@@ -220,3 +220,21 @@ void UIPlot::DrawPlot() {
 	// draw function
 	this->DrawFunction();
 }
+
+void UIPlot::OnExpose(IWindow* sender, XEvent& event) {
+	this->IExposeEvent::OnExpose(sender, event); 
+
+	this->DrawPlot(); 
+}
+
+void UIPlot::Event(XEvent& event) {
+	if (this->IWindow::IsOwner(event)) {
+		switch (event.type) {
+			case Expose: {
+				this->OnExpose(this, event);
+			} break;
+		}
+	}
+}
+
+

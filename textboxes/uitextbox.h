@@ -7,6 +7,8 @@ class UITextBox : public ITextBox {
 	public:
 		UITextBox(XConfig& config, ETextBoxType type);
 	public:
+		virtual void Event(XEvent& event) override;
+	public:
 		virtual void OnKeyPress(IWindow* sender, XEvent& event) override;
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:

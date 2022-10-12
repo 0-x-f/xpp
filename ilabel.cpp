@@ -15,12 +15,4 @@ void ILabel::SetText(const std::string& text) {
 	this->mText = text;
 }
 
-void ILabel::Event(XEvent& event) {
-	switch (event.type) {
-		case Expose: {
-			this->OnExpose(this, event);
-		} break;
-	}
-}
-
 

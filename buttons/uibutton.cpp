@@ -169,4 +169,20 @@ void UIButton::DrawText() {
 	);
 }
 
+void UIButton::Event(XEvent& event) {
+	if (this->IWindow::IsOwner(event)) {
+		switch (event.type) {
+			case ButtonPress: {
+				this->OnButtonPress(this, event);
+			} break;
+			case ButtonRelease: {
+				this->OnButtonRelease(this, event);
+			} break;
+			case Expose: {
+				this->OnExpose(this, event);
+			} break;
+		}
+	}
+}
+
 

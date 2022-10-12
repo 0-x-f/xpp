@@ -18,10 +18,12 @@ void UIWindow::OnKeyPress(IWindow* sender, XEvent& event) {
 }
 
 void UIWindow::Event(XEvent& event) {
-	switch (event.type) {
-		case KeyPress: {
-			this->OnKeyPress(this, event);
-		} break;
+	if (this->IWindow::IsOwner(event)) {
+		switch (event.type) {
+			case KeyPress: {
+				this->OnKeyPress(this, event);
+			} break;
+		}
 	}
 }
 

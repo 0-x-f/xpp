@@ -21,16 +21,11 @@ class IWindow {
 		virtual int GetY() const;
 		virtual unsigned int GetWidth() const;
 		virtual unsigned int GetHeight() const;
+	public:
+		virtual bool IsOwner(XEvent& event) const;
 	protected:
 		Window mWindow;
 		XConfig mConfig;
-};
-
-using Callback = std::function<void(IWindow*, XEvent&, void*)>;
-
-struct XCallback {
-	void*		data;
-	Callback	callback;
 };
 
 #endif // IWINDOW_H

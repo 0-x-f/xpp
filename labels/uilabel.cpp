@@ -69,4 +69,14 @@ void UILabel::DrawText() {
 	);
 }
 
+void UILabel::Event(XEvent& event) {
+	if (this->IWindow::IsOwner(event)) {
+		switch (event.type) {
+			case Expose: {
+				this->OnExpose(this, event);
+			} break;
+		}
+	}
+}
+
 

@@ -15,8 +15,6 @@ class ILabel :
 		ILabel(XConfig& button);
 	public:
 		virtual void SetText(const std::string& text);
-	public:
-		virtual void Event(XEvent& event) override;
 	protected:
 		std::string mText;
 };

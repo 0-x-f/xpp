@@ -31,6 +31,10 @@ class UIPlot :
 	public:
 		UIPlot(XConfig& plot);
 	public:
+		virtual void Event(XEvent& event) override;
+	public:
+		virtual void OnExpose(IWindow* sender, XEvent& event) override;
+	public:
 		virtual void DrawPlot() override;
 	private:
 		void DrawCoordinateAxes();
@@ -67,4 +71,5 @@ class UIPlot :
 };
 
 #endif // PLOT_H
+
 

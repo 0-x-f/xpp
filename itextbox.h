@@ -24,8 +24,6 @@ class ITextBox :
 	public:
 		virtual void SetContent(const std::string& content);
 		virtual std::string GetContent() const;
-	public:
-		virtual void Event(XEvent& event) override;
 	protected:
 		std::string mContent;
 		ETextBoxType mType;

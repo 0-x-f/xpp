@@ -16,18 +16,4 @@ void IPlot::SetX(const PlotIn& pi) {
 	this->mPlotIn = pi;
 }
 
-void IPlot::OnExpose(IWindow* sender, XEvent& event) {
-	this->IExposeEvent::OnExpose(sender, event); 
-
-	this->DrawPlot(); 
-}
-
-void IPlot::Event(XEvent& event) {
-	switch (event.type) {
-		case Expose: {
-			this->OnExpose(this, event);
-		} break;
-	}
-}
-
 

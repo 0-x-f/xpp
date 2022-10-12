@@ -7,6 +7,8 @@ class UILabel : public ILabel {
 	public:
 		UILabel(XConfig& label);
 	public:
+		virtual void Event(XEvent& event) override;
+	public:
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:
 		virtual void SetText(const std::string& text) override;

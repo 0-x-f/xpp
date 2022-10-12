@@ -47,4 +47,8 @@ void IWindow::Hide() {
 	XUnmapWindow(this->mConfig.display, this->mWindow);
 }
 
+bool IWindow::IsOwner(XEvent& event) const {
+	return event.xany.window == this->GetWindow();
+}
+
 

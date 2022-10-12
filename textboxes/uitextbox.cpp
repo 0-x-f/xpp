@@ -212,4 +212,17 @@ void UITextBox::DrawShadow(GC& tcolor, GC& bcolor) {
 	);
 }
 
+void UITextBox::Event(XEvent& event) {
+	if (this->IWindow::IsOwner(event)) {
+		switch (event.type) {
+			case KeyPress: {
+				this->OnKeyPress(this, event);
+			} break;
+			case Expose: {
+				this->OnExpose(this, event);
+			} break;
+		}
+	}
+}
+
 

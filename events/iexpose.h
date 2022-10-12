@@ -4,7 +4,9 @@
 #include "../iwindow.h"
 #include "../ievent.h"
 
-class IExposeEvent : public IEvent {
+class IExposeEvent :
+	public IEvent {
+
 	public:
 		virtual void SetExpose(XCallback& callback);
 	public:

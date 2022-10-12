@@ -7,6 +7,8 @@ class UIButton : public IButton {
 	public:
 		UIButton(XConfig& button);
 	public:
+		virtual void Event(XEvent& event) override;
+	public:
 		virtual void OnButtonPress(IWindow* sender, XEvent& event) override;
 		virtual void OnButtonRelease(IWindow* sender, XEvent& event) override;
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;

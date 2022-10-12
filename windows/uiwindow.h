@@ -5,7 +5,10 @@
 #include "../events/ikeypress.h"
 #include "../xconfig.h"
 
-class UIWindow : public IWindow, public IKeyPressEvent {
+class UIWindow :
+	public IWindow,
+	public IKeyPressEvent {
+
 	public:
 		UIWindow(XConfig& window);
 	public:
