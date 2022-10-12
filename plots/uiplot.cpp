@@ -13,35 +13,33 @@ UIPlot::UIPlot(XConfig& plot) : IPlot(plot) {
 	this->mMaxY = std::numeric_limits<double>::quiet_NaN();
 	this->mMinY = std::numeric_limits<double>::quiet_NaN();
 
+	Display* dpy = this->mConfig.display;
+	Window win = this->mWindow;
 	XGCValues gcv;
-	gcv.background = 0xFFFFFF;
+
+	// GC for coordinate axes
 	gcv.foreground = 0x000000;
+	this->mCoordinateAxesGC = XCreateGC(dpy, win, GCForeground, &gcv);
 
-	this->mCoordinateAxesGC = XCreateGC(
-		this->mConfig.display,
-		this->mWindow,
-		GCForeground | GCBackground,
-		&gcv
-	);
-
-	gcv.background = 0xFFFFFF;
+	// GC for function
 	gcv.foreground = 0xD91212;
-
-	this->mFunctionColorGC = XCreateGC(
-		this->mConfig.display,
-		this->mWindow,
-		GCForeground | GCBackground,
-		&gcv
-	);
+	this->mFunctionColorGC = XCreateGC(dpy, win, GCForeground, &gcv);
+ 
+	// GC for grid
+	gcv.foreground = 0x1ED3C0;
+	this->mGridGC = XCreateGC(dpy, win, GCForeground, &gcv);
 
 	this->padding = 10;
+
+	this->mMinGridIndentation = 25;
+	this->mMaxGridIndentation = 150;
 }
 
 void UIPlot::CalculateFunction() {
 
-	this->mValues = std::vector<double>(this->mPlotIn.Count(), 0);
-
 	unsigned int xCount = this->mPlotIn.Count();
+
+	this->mValues = std::vector<double>(xCount, 0);
 
 	for(int i = 0; i < xCount; i++) {
 
@@ -51,13 +49,14 @@ void UIPlot::CalculateFunction() {
 		);
 
 		// serch max value
-		if (std::isnan(this->mMaxY) || (this->mMaxY < this->mValues[i] && !std::isinf(this->mValues[i]))) 
+		if (std::isnan(this->mMaxY) 
+			|| (this->mMaxY < this->mValues[i] 
+				&& !std::isinf(this->mValues[i]))) 
 			this->mMaxY = this->mValues[i];
 
 		// serch min value
 		if (std::isnan(this->mMinY) || this->mMinY > this->mValues[i]) 
 			this->mMinY = this->mValues[i];
-
 	};
 }
 
@@ -112,7 +111,7 @@ void UIPlot::DrawLine(const UIPoint& a, const UIPoint& b, const GC& gc) {
 	);
 }
 
-void UIPlot::DrawCoordinatePlane() {
+void UIPlot::DrawCoordinateAxes() {
 
 	// draw OX
 	UIPoint a = UIPoint(0, this->mCenter.y);
@@ -125,6 +124,51 @@ void UIPlot::DrawCoordinatePlane() {
 	b = UIPoint(this->mCenter.x, this->mConfig.height);
 
 	this->DrawLine(a, b, this->mCoordinateAxesGC);
+}
+
+void UIPlot::DrawGrid() {
+
+	UIPoint a, b;
+
+	unsigned int width = this->mConfig.width;
+	unsigned int height = this->mConfig.height;
+
+	unsigned int indent = this->mUnitSeg;
+
+	// indent adjustment
+	if (indent < this->mMinGridIndentation) {
+		while (indent < this->mMinGridIndentation) {
+			indent += this->mUnitSeg;
+		}
+	} else if (indent > this->mMaxGridIndentation) {
+		for(int i = 2; indent > this->mMaxGridIndentation; i++) {
+			indent /= i;
+		}
+	}
+
+	// vertical lines
+	a.y = 0; b.y = height;
+
+	for (int i = this->mCenter.x % indent; i <= width; i+=indent) {
+
+		if (i == this->mCenter.x)
+			continue;
+
+		a.x = b.x = i;
+		DrawLine(a, b, this->mGridGC);
+	}
+
+	// horizontal lines
+	a.x = 0; b.x = width;
+
+	for (int i = this->mCenter.y % indent; i <= height; i+=indent) {
+
+		if (i == this->mCenter.y)
+			continue;
+
+		a.y = b.y = i;
+		DrawLine(a, b, this->mGridGC);
+	}
 }
 
 void UIPlot::DrawFunction() {
@@ -167,10 +211,12 @@ void UIPlot::DrawPlot() {
 	// caclulation plot geometry (unit segment, coordinates center)
 	this->CalculateGeometry();
 
-	// draw coordinate plane (OX, OY, grid and labels)
-	this->DrawCoordinatePlane();
+	// draw grid
+	this->DrawGrid();
+
+	// draw coordinate axes (OX, OY)
+	this->DrawCoordinateAxes();
 
 	// draw function
 	this->DrawFunction();
 }
-

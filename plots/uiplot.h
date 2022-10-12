@@ -8,6 +8,7 @@
 
 #include "../iplot.h"
 #include "../xconfig.h"
+#include "../labels/uilabel.h"
 
 struct UIPoint {
 	unsigned int x;
@@ -32,8 +33,9 @@ class UIPlot :
 	public:
 		virtual void DrawPlot() override;
 	private:
-		void DrawCoordinatePlane();
+		void DrawCoordinateAxes();
 		void DrawFunction();
+		void DrawGrid();
 	private:
 		void DrawLine(const UIPoint& a, const UIPoint& b, const GC& gc);
 	private:
@@ -44,6 +46,9 @@ class UIPlot :
 			double b, 
 			unsigned int length
 		);
+	private:
+		unsigned int mMinGridIndentation;
+		unsigned int mMaxGridIndentation;
 	protected:
 		std::vector<double> mValues;
 	protected:
@@ -56,6 +61,7 @@ class UIPlot :
 	protected:
 		GC mCoordinateAxesGC;
 		GC mFunctionColorGC; 
+		GC mGridGC;
 	private:
 		unsigned short int padding;
 };

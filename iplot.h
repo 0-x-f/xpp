@@ -17,7 +17,7 @@ struct PlotIn {
 	double	step;
 
 	unsigned int Count() {
-		return (unsigned int)abs(((stop-start)/step)) + 1;
+		return round(fabs((stop-start)/step))+1;
 	}
 
 	double GetX(unsigned int i) {
