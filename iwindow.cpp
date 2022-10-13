@@ -55,25 +55,28 @@ bool IWindow::IsOwner(XEvent& event) const {
 }
 
 void IWindow::AddChild(IWindow& child) {
+
+	const Window cWindow = child.GetWindow();
+
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
+		if(this->mChildItems[i]->GetWindow() == cWindow)
+			return;
+	}
+
 	this->mChildItems.push_back(&child);
 }
 
 void IWindow::RemoveChild(const std::string& className) {
 
-	unsigned int iSize = this->mChildItems.size();
+	auto newEnd = std::remove_if(
+			this->mChildItems.begin(), 
+			this->mChildItems.end(), 
+			[&className](IWindow* item) {
+				return item->ClassList.Contains(className);
+			}
+	);
 
-	for(unsigned int i = 0; i < iSize; i++) {
-
-		if (this->mChildItems[i]->ClassList.Contains(className) != true) 
-			continue;
-
-		// if it is not the last item
-		if (i != iSize-1) 
-			this->mChildItems[i] = this->mChildItems[iSize];
-
-		this->mChildItems.pop_back();
-		iSize--;
-	}
+	this->mChildItems.erase(newEnd, this->mChildItems.end());
 }
 
 IWindow* IWindow::FindChild(const std::string& className) const {
@@ -101,27 +104,21 @@ std::vector<IWindow*> IWindow::FindChildAll(
 }
 
 void UIClassList::Add(const std::string& className) {
-	if (!(this->Contains(className))) 
+	if (!this->Contains(className)) 
 		this->mClassList.push_back(className);
 }
 
 void UIClassList::Remove(const std::string& className) {
 
-	unsigned int iSize = this->mClassList.size();
+	auto newEnd = std::remove_if(
+			this->mClassList.begin(), 
+			this->mClassList.end(), 
+			[&className](const std::string& item) {
+				return item == className;
+			}
+	);
 
-	for(unsigned int i = 0; i < iSize; i++) {
-
-		if (this->mClassList[i] != className) 
-			continue;
-
-		// if it is not the last item
-		if (i != iSize-1) 
-			this->mClassList[i] = this->mClassList[iSize];
-
-		this->mClassList.pop_back();
-
-		return;
-	}
+	this->mClassList.erase(newEnd, this->mClassList.end());
 }
 
 bool UIClassList::Contains(const std::string& className) const {
@@ -145,4 +142,3 @@ void UIClassList::Toggle(const std::string& className) {
 	if (size == this->mClassList.size()) 
 		this->mClassList.push_back(className);
 }
-
