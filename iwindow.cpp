@@ -1,3 +1,7 @@
+#include <string>
+#include <vector>
+#include <functional>
+
 #include "iwindow.h"
 
 IWindow::IWindow(XConfig& window) {
