@@ -3,6 +3,7 @@
 
 #include "../iwindow.h"
 #include "../ievent.h"
+#include "../xcallback.h"
 
 class IExposeEvent :
 	public IEvent {

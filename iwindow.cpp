@@ -55,6 +55,97 @@ bool IWindow::IsOwner(XEvent& event) const {
 }
 
 void IWindow::AddChild(IWindow& child) {
+<<<<<<< HEAD
+=======
+
+	const Window cWindow = child.GetWindow();
+
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
+		if(this->mChildItems[i]->GetWindow() == cWindow)
+			return;
+	}
+
+	this->mChildItems.push_back(&child);
+}
+
+void IWindow::RemoveChild(const std::string& className) {
+
+	auto newEnd = std::remove_if(
+			this->mChildItems.begin(), 
+			this->mChildItems.end(), 
+			[&className](IWindow* item) {
+				return item->ClassList.Contains(className);
+			}
+	);
+
+	this->mChildItems.erase(newEnd, this->mChildItems.end());
+}
+
+IWindow* IWindow::FindChild(const std::string& className) const {
+
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
+		if (this->mChildItems[i]->ClassList.Contains(className)) 
+			return this->mChildItems[i];
+	}
+
+	return nullptr;
+}
+
+std::vector<IWindow*> IWindow::FindChildAll(
+	const std::string& className
+) const {
+
+	std::vector<IWindow*> items;
+
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
+		if (this->mChildItems[i]->ClassList.Contains(className)) 
+			items.push_back(this->mChildItems[i]);
+	}
+
+	return items;
+}
+
+void UIClassList::Add(const std::string& className) {
+	if (!this->Contains(className)) 
+		this->mClassList.push_back(className);
+}
+
+void UIClassList::Remove(const std::string& className) {
+
+	auto newEnd = std::remove_if(
+			this->mClassList.begin(), 
+			this->mClassList.end(), 
+			[&className](const std::string& item) {
+				return item == className;
+			}
+	);
+
+	this->mClassList.erase(newEnd, this->mClassList.end());
+}
+
+bool UIClassList::Contains(const std::string& className) const {
+
+	for(unsigned int i = 0; i < this->mClassList.size(); i++) {
+		if (this->mClassList[i] == className) 
+			return true;
+	}
+
+	return false;
+}
+
+void UIClassList::Toggle(const std::string& className) {
+
+	unsigned int size = this->mClassList.size();
+
+	this->Remove(className);
+
+	// if the size has not changed -> removal has not occurred -> 
+	// item was not -> need to be added
+	if (size == this->mClassList.size()) 
+		this->mClassList.push_back(className);
+}
+
+>>>>>>> 6bb00b9cee21a47e5674d548d5f29b6f4bafe932
 
 	const Window cWindow = child.GetWindow();
 
