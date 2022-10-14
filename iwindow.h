@@ -3,10 +3,11 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <functional>
-#include <string>
-#include <vector>
 
+#include <vector>
+#include <string>
+
+#include "ievent.h"
 #include "xconfig.h"
 
 class UIClassList {
@@ -19,7 +20,7 @@ class UIClassList {
 		void Toggle(const std::string& className);
 }; 
 
-class IWindow {
+class IWindow : public IEvent {
 	public:
 		IWindow(XConfig& window);
 	public:
