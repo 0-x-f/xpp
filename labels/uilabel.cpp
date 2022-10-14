@@ -50,7 +50,8 @@ void UILabel::SetText(const std::string& text) {
 }
 
 void UILabel::DrawText() {
-	int xCenter = (this->mConfig.width - (6 * this->mText.length())) / 2;
+	//int xCenter = (this->mConfig.width - (6 * this->mText.length())) / 2;
+	int xCenter = 6;
 	int yCenter = (
 		this->mConfig.height
 		- (this->mFont->ascent + this->mFont->descent)) / 2
