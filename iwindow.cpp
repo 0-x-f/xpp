@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "iwindow.h"
 
@@ -16,6 +17,11 @@ IWindow::IWindow(XConfig& window) {
 		this->mConfig.border,
 		this->mConfig.background
 	);
+}
+
+IWindow::~IWindow() {
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) 
+		delete this->mChildItems[i];
 }
 
 Window IWindow::GetWindow() const {
@@ -54,16 +60,17 @@ bool IWindow::IsOwner(XEvent& event) const {
 	return event.xany.window == this->GetWindow();
 }
 
-void IWindow::AddChild(IWindow& child) {
+void IWindow::AddChild(IWindow* child) {
 
-	const Window cWindow = child.GetWindow();
+	const Window cWindow = child->GetWindow();
 
 	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
-		if(this->mChildItems[i]->GetWindow() == cWindow)
+		if(this->mChildItems[i]->GetWindow() == cWindow) {
 			return;
+		}
 	}
 
-	this->mChildItems.push_back(&child);
+	this->mChildItems.push_back(child);
 }
 
 void IWindow::RemoveChild(const std::string& className) {
