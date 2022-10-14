@@ -143,3 +143,5 @@ void UIClassList::Toggle(const std::string& className) {
 	if (size == this->mClassList.size()) 
 		this->mClassList.push_back(className);
 }
+
+
