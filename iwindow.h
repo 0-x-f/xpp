@@ -23,6 +23,7 @@ class UIClassList {
 class IWindow : public IEvent {
 	public:
 		IWindow(XConfig& window);
+		~IWindow();
 	public:
 		virtual void Show();
 		virtual void Hide();
@@ -37,7 +38,7 @@ class IWindow : public IEvent {
 	public:
 		virtual bool IsOwner(XEvent& event) const;
 	public:
-		virtual void AddChild(IWindow& child);
+		virtual void AddChild(IWindow* child);
 		virtual void RemoveChild(const std::string& className);
 	public:
 		virtual IWindow* FindChild(const std::string& className) const;
