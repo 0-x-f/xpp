@@ -12,10 +12,10 @@ void IPlot::SetFunc(PlotFunc pf) {
 	this->mPlotFunc = pf;
 }
 
-void IPlot::SetX(const PlotIn& pi) {
+void IPlot::SetPlotIn(const PlotIn& pi) {
 	this->mPlotIn = pi;
 }
-PlotIn IPlot::GetX() const {
+PlotIn IPlot::GetPlotIn() const {
 	return this->mPlotIn;
 }
 

@@ -40,8 +40,8 @@ class IPlot :
 		virtual void DrawPlot() = 0;
 	public:
 		virtual void SetFunc(PlotFunc pf);
-		virtual void SetX(const PlotIn& pi);
-		virtual PlotIn GetX() const;
+		virtual void SetPlotIn(const PlotIn& pi);
+		virtual PlotIn GetPlotIn() const;
 	protected:
 		PlotFunc mPlotFunc;
 		PlotIn mPlotIn;
