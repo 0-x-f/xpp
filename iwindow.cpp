@@ -112,6 +112,7 @@ std::vector<IWindow*> IWindow::FindChildAll(
 
 void IWindow::Clear() {
 	XClearWindow(this->mConfig.display, this->mWindow);
+	XDestroyWindow(this->mConfig.display, this->mWindow);
 }
 
 void UIClassList::Add(const std::string& className) {
