@@ -35,6 +35,8 @@ class UIPlot :
 	public:
 		virtual void OnExpose(IWindow* sender, XEvent& event) override;
 	public:
+		virtual void Clear() override;
+	public:
 		virtual void DrawPlot() override;
 	private:
 		void DrawCoordinateAxes();
@@ -58,8 +60,6 @@ class UIPlot :
 			double b, 
 			unsigned int length
 		);
-	private:
-		void Clear();
 	private:
 		unsigned int mMinGridIndentation;
 		unsigned int mMaxGridIndentation;

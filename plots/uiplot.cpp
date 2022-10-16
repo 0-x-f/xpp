@@ -290,15 +290,16 @@ void UIPlot::DrawPlot() {
 
 void UIPlot::Clear() {
 
-	XClearWindow(this->mConfig.display, this->mWindow);
-
 	this->mValues.clear();
 
 	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
+		this->mChildItems[i]->Clear();
 		delete this->mChildItems[i];
 	}
 
 	this->mChildItems.clear();
+
+	this->IWindow::Clear();
 }
 
 void UIPlot::OnExpose(IWindow* sender, XEvent& event) {
