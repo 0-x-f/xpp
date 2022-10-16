@@ -4,9 +4,14 @@
 #include <limits>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
 
 #include "uiplot.h"
 #include "../xconfig.h"
+
+#define	VERTICAL	0
+#define HORIZONTAL	1
 
 UIPlot::UIPlot(XConfig& plot) : IPlot(plot) {
 
@@ -31,7 +36,7 @@ UIPlot::UIPlot(XConfig& plot) : IPlot(plot) {
 
 	this->padding = 10;
 
-	this->mMinGridIndentation = 25;
+	this->mMinGridIndentation = 56;
 	this->mMaxGridIndentation = 150;
 }
 
@@ -49,13 +54,15 @@ void UIPlot::CalculateFunction() {
 		);
 
 		// serch max value
-		if (std::isnan(this->mMaxY) 
+		if ((std::isnan(this->mMaxY) || std::isinf(this->mMaxY)) 
 			|| (this->mMaxY < this->mValues[i] 
 				&& !std::isinf(this->mValues[i]))) 
 			this->mMaxY = this->mValues[i];
 
 		// serch min value
-		if (std::isnan(this->mMinY) || this->mMinY > this->mValues[i]) 
+		if ((std::isnan(this->mMinY) || std::isinf(this->mMinY))
+			|| (this->mMinY > this->mValues[i]
+				&& !std::isinf(this->mValues[i]))) 
 			this->mMinY = this->mValues[i];
 	};
 }
@@ -111,24 +118,103 @@ void UIPlot::DrawLine(const UIPoint& a, const UIPoint& b, const GC& gc) {
 	);
 }
 
+void UIPlot::DrawLabel(const UIPoint& a, const std::string& text) {
+
+	XConfig lConfig = {
+		.display = this->mConfig.display,
+		.parent = this->mWindow,
+		.x = a.x,
+		.y = a.y,
+		.width = text.size() * 6 + 6,
+		.height = 13,
+		.borderWidth = 0,
+		.border = 0,
+		.background = this->mConfig.background,
+	};
+	UILabel* label = new UILabel(lConfig);
+
+	label->ClassList.Add("label");
+	label->SetText(text);
+	label->Show();
+
+	this->AddChild(label);
+}
+
 void UIPlot::DrawCoordinateAxes() {
 
 	// draw OX
-	UIPoint a = UIPoint(0, this->mCenter.y);
-	UIPoint b = UIPoint(this->mConfig.width, this->mCenter.y); 
+	UIPoint a(0, this->mCenter.y);
+	UIPoint b(this->mConfig.width, this->mCenter.y); 
     
 	this->DrawLine(a, b, this->mCoordinateAxesGC);    
-    
+
+	b.y-=15; b.x-=25;
+
+	this->DrawLabel(b, "x");
+
+	b.y+=15; b.x+=25;
+
 	// draw OY    
 	a = UIPoint(this->mCenter.x, 0);
 	b = UIPoint(this->mCenter.x, this->mConfig.height);
 
 	this->DrawLine(a, b, this->mCoordinateAxesGC);
+
+	a.x-=20;
+	a.y+=3;
+
+	this->DrawLabel(a, "y");
+}
+
+void UIPlot::DrawGridLines(
+	unsigned short direction,
+	unsigned int length,
+	unsigned int distance,
+	unsigned int origin,
+	unsigned int indent
+) {
+
+	UIPoint a, b, c;
+
+	a.y = 0; b.y = length;
+	a.x = 0; b.x = length;
+
+	for (unsigned int i = origin % indent; i <= distance; i+=indent) {
+
+		if (i == origin)
+			continue;
+
+		std::stringstream ss;
+		int mark = 1;
+
+		if(direction == VERTICAL) {
+			a.x = b.x = c.x = i;
+			c.y = this->mCenter.y+6;
+			c.x+=3;
+
+			mark = i > origin ? 1 : -1;
+		} else {
+			a.y = b.y = c.y = i;
+			c.x = this->mCenter.x+6;
+			c.y+=3;
+
+			mark = i < origin ? 1 : -1;
+		}
+
+		// calculation of the grid pitch value and rounding to hundredths
+		ss << mark * round(
+			((std::max(origin, i) - std::min(origin, i))
+			/ this->mUnitSeg)
+		*100)/100;
+
+		// draw label with grid pitch value
+		this->DrawLabel(c, ss.str());
+
+		this->DrawLine(a, b, this->mGridGC);
+	}
 }
 
 void UIPlot::DrawGrid() {
-
-	UIPoint a, b;
 
 	unsigned int width = this->mConfig.width;
 	unsigned int height = this->mConfig.height;
@@ -146,29 +232,8 @@ void UIPlot::DrawGrid() {
 		}
 	}
 
-	// vertical lines
-	a.y = 0; b.y = height;
-
-	for (int i = this->mCenter.x % indent; i <= width; i+=indent) {
-
-		if (i == this->mCenter.x)
-			continue;
-
-		a.x = b.x = i;
-		DrawLine(a, b, this->mGridGC);
-	}
-
-	// horizontal lines
-	a.x = 0; b.x = width;
-
-	for (int i = this->mCenter.y % indent; i <= height; i+=indent) {
-
-		if (i == this->mCenter.y)
-			continue;
-
-		a.y = b.y = i;
-		DrawLine(a, b, this->mGridGC);
-	}
+	this->DrawGridLines(VERTICAL, height, width, this->mCenter.x, indent);
+	this->DrawGridLines(HORIZONTAL, width, height, this->mCenter.y, indent);
 }
 
 void UIPlot::DrawFunction() {
@@ -185,7 +250,7 @@ void UIPlot::DrawFunction() {
 			continue;
 		}
 
-		UIPoint cPoint = UIPoint(
+		UIPoint cPoint(
 			this->mCenter.x + this->mPlotIn.GetX(i) * this->mUnitSeg, 
 			this->mCenter.y - (this->mValues[i] * this->mUnitSeg)
 		);
@@ -205,6 +270,8 @@ void UIPlot::DrawPlot() {
 	if (this->mPlotFunc == nullptr)
 		return;
 
+	this->Clear();
+
 	// calculation of function values in mPlotIn
 	this->CalculateFunction(); 
 
@@ -221,6 +288,19 @@ void UIPlot::DrawPlot() {
 	this->DrawFunction();
 }
 
+void UIPlot::Clear() {
+
+	XClearWindow(this->mConfig.display, this->mWindow);
+
+	this->mValues.clear();
+
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
+		delete this->mChildItems[i];
+	}
+
+	this->mChildItems.clear();
+}
+
 void UIPlot::OnExpose(IWindow* sender, XEvent& event) {
 	this->IExposeEvent::OnExpose(sender, event); 
 
@@ -234,7 +314,9 @@ void UIPlot::Event(XEvent& event) {
 				this->OnExpose(this, event);
 			} break;
 		}
+	} else {
+
+		for(unsigned int i = 0; i < this->mChildItems.size(); i++) 
+			this->mChildItems[i]->Event(event);
 	}
 }
-
-

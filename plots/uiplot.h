@@ -40,6 +40,14 @@ class UIPlot :
 		void DrawCoordinateAxes();
 		void DrawFunction();
 		void DrawGrid();
+		void DrawGridLines(
+			unsigned short direction,
+			unsigned int length,
+			unsigned int distance,
+			unsigned int origin,
+			unsigned int indent
+		); 
+		void DrawLabel(const UIPoint& a, const std::string& text);
 	private:
 		void DrawLine(const UIPoint& a, const UIPoint& b, const GC& gc);
 	private:
@@ -51,18 +59,20 @@ class UIPlot :
 			unsigned int length
 		);
 	private:
+		void Clear();
+	private:
 		unsigned int mMinGridIndentation;
 		unsigned int mMaxGridIndentation;
-	protected:
+	private:
 		std::vector<double> mValues;
-	protected:
+	private:
 		double mMaxY;
 		double mMinY;
-	protected:
+	private:
 		UIPoint mCenter;
-	protected:
+	private:
 		double mUnitSeg;
-	protected:
+	private:
 		GC mCoordinateAxesGC;
 		GC mFunctionColorGC; 
 		GC mGridGC;
@@ -71,5 +81,3 @@ class UIPlot :
 };
 
 #endif // PLOT_H
-
-
