@@ -269,8 +269,9 @@ void UIPlot::DrawPlot() {
 
 	if (this->mPlotFunc == nullptr)
 		return;
-
-	this->Clear();
+	
+	if (this->mChildItems.size() != 0)
+		this->Clear();
 
 	// calculation of function values in mPlotIn
 	this->CalculateFunction(); 
@@ -281,7 +282,7 @@ void UIPlot::DrawPlot() {
 	// draw grid
 	this->DrawGrid();
 
-	// draw coordinate axes (OX, OY)
+	//draw coordinate axes (OX, OY)
 	this->DrawCoordinateAxes();
 
 	// draw function
