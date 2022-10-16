@@ -41,6 +41,7 @@ class IPlot :
 	public:
 		virtual void SetFunc(PlotFunc pf);
 		virtual void SetX(const PlotIn& pi);
+		virtual PlotIn GetX() const;
 	protected:
 		PlotFunc mPlotFunc;
 		PlotIn mPlotIn;

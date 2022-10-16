@@ -15,5 +15,7 @@ void IPlot::SetFunc(PlotFunc pf) {
 void IPlot::SetX(const PlotIn& pi) {
 	this->mPlotIn = pi;
 }
-
+PlotIn IPlot::GetX() const {
+	return this->mPlotIn;
+}
 
