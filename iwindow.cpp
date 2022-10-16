@@ -20,8 +20,10 @@ IWindow::IWindow(XConfig& window) {
 }
 
 IWindow::~IWindow() {
-	for(unsigned int i = 0; i < this->mChildItems.size(); i++) 
+	//XDestroyWindow(this->mConfig.display, this->mWindow);
+	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
 		delete this->mChildItems[i];
+	}
 }
 
 Window IWindow::GetWindow() const {
@@ -112,7 +114,6 @@ std::vector<IWindow*> IWindow::FindChildAll(
 
 void IWindow::Clear() {
 	XClearWindow(this->mConfig.display, this->mWindow);
-	XDestroyWindow(this->mConfig.display, this->mWindow);
 }
 
 void UIClassList::Add(const std::string& className) {
