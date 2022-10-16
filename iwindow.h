@@ -45,6 +45,8 @@ class IWindow : public IEvent {
 			const std::string& className
 		) const;
 	public:
+		virtual void Clear();
+	public:
 		UIClassList ClassList;
 	protected:
 		std::vector<IWindow*> mChildItems;

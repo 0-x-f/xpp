@@ -110,6 +110,10 @@ std::vector<IWindow*> IWindow::FindChildAll(
 	return items;
 }
 
+void IWindow::Clear() {
+	XClearWindow(this->mConfig.display, this->mWindow);
+}
+
 void UIClassList::Add(const std::string& className) {
 	if (!this->Contains(className)) 
 		this->mClassList.push_back(className);
