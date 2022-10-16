@@ -4,7 +4,6 @@
 #include <limits>
 #include <vector>
 #include <algorithm>
-#include <iostream>
 #include <sstream>
 
 #include "uiplot.h"
@@ -270,9 +269,6 @@ void UIPlot::DrawPlot() {
 	if (this->mPlotFunc == nullptr)
 		return;
 	
-	if (this->mChildItems.size() != 0)
-		this->Clear();
-
 	// calculation of function values in mPlotIn
 	this->CalculateFunction(); 
 
@@ -294,22 +290,22 @@ void UIPlot::Clear() {
 	this->mValues.clear();
 
 	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
-		this->mChildItems[i]->Clear();
-		delete this->mChildItems[i];
+		this->mChildItems[i]->Hide();
 	}
 
 	this->mChildItems.clear();
-
-	this->IWindow::Clear();
+	XClearWindow(this->mConfig.display, this->mWindow);
 }
 
 void UIPlot::OnExpose(IWindow* sender, XEvent& event) {
+
 	this->IExposeEvent::OnExpose(sender, event); 
 
 	this->DrawPlot(); 
 }
 
 void UIPlot::Event(XEvent& event) {
+
 	if (this->IWindow::IsOwner(event)) {
 		switch (event.type) {
 			case Expose: {
