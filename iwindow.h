@@ -23,7 +23,7 @@ class UIClassList {
 class IWindow : public IEvent {
 	public:
 		IWindow(XConfig& window);
-		~IWindow();
+		virtual ~IWindow();
 	public:
 		virtual void Show();
 		virtual void Hide();
