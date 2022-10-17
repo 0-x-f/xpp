@@ -1,120 +1,121 @@
 #include "uitextbox.h"
 
-UITextBox::UITextBox(XConfig& config, ETextBoxType type)
-	: ITextBox(config, type) {
-	// Screen color contains RGB values provided by the hardware
-	// Exact color contains exact RGB values
+	UITextBox::UITextBox(XConfig& config, ETextBoxType type)
+		: ITextBox(config, type) {
+		// Screen color contains RGB values provided by the hardware
+		// Exact color contains exact RGB values
 
-	XColor		screenLightGrayColor, exactLightGrayColor;
-	XColor		screenDarkGrayColor, exactDarkGrayColor;
-	XGCValues	lightGrayValues;
-	XGCValues	darkGrayValues;
+		XColor		screenLightGrayColor, exactLightGrayColor;
+		XColor		screenDarkGrayColor, exactDarkGrayColor;
+		XGCValues	lightGrayValues;
+		XGCValues	darkGrayValues;
 
-	XColor		screenTextColor, exactTextColor;
-	XGCValues	textColorValues;
+		XColor		screenTextColor, exactTextColor;
+		XGCValues	textColorValues;
 
-	// Allocations for text box shadow
+		// Allocations for text box shadow
 
-	XAllocNamedColor(
-		this->mConfig.display,
-		XDefaultColormap(
+		XAllocNamedColor(
 			this->mConfig.display,
-			DefaultScreen(this->mConfig.display)
-		),
-		"#cccccc",
-		&screenLightGrayColor,
-		&exactLightGrayColor
-	);
+			XDefaultColormap(
+				this->mConfig.display,
+				DefaultScreen(this->mConfig.display)
+			),
+			"#cccccc",
+			&screenLightGrayColor,
+			&exactLightGrayColor
+		);
 
-	XAllocNamedColor(
-		this->mConfig.display,
-		XDefaultColormap(
+		XAllocNamedColor(
 			this->mConfig.display,
-			DefaultScreen(this->mConfig.display)
-		),
-		"#888888",
-		&screenDarkGrayColor,
-		&exactDarkGrayColor
-	);
- 
-	lightGrayValues.foreground = screenLightGrayColor.pixel;
-	this->mColorLightgray = XCreateGC(
-		this->mConfig.display,
-		this->mConfig.parent,
-		GCForeground,
-		&lightGrayValues
-	);
-
-	darkGrayValues.foreground = screenDarkGrayColor.pixel;
-	this->mColorDarkgray = XCreateGC(
-		this->mConfig.display,
-		this->mConfig.parent,
-		GCForeground,
-		&darkGrayValues
-	);
-
-	XAllocNamedColor(
-		this->mConfig.display,
-		XDefaultColormap(
+			XDefaultColormap(
+				this->mConfig.display,
+				DefaultScreen(this->mConfig.display)
+			),
+			"#888888",
+			&screenDarkGrayColor,
+			&exactDarkGrayColor
+		);
+	 
+		lightGrayValues.foreground = screenLightGrayColor.pixel;
+		this->mColorLightgray = XCreateGC(
 			this->mConfig.display,
-			DefaultScreen(this->mConfig.display)
-		),
-		"#000000",
-		&screenTextColor,
-		&exactTextColor
-	);
+			this->mConfig.parent,
+			GCForeground,
+			&lightGrayValues
+		);
 
-	this->mFont = XLoadQueryFont(
-		this->mConfig.display,
-		"6x13"
-	);
+		darkGrayValues.foreground = screenDarkGrayColor.pixel;
+		this->mColorDarkgray = XCreateGC(
+			this->mConfig.display,
+			this->mConfig.parent,
+			GCForeground,
+			&darkGrayValues
+		);
 
-	textColorValues.foreground = exactTextColor.pixel;
-	textColorValues.background = this->mConfig.background;
-	textColorValues.font = this->mFont->fid;
+		XAllocNamedColor(
+			this->mConfig.display,
+			XDefaultColormap(
+				this->mConfig.display,
+				DefaultScreen(this->mConfig.display)
+			),
+			"#000000",
+			&screenTextColor,
+			&exactTextColor
+		);
 
-	this->mContext = XCreateGC(
-		this->mConfig.display,
-		this->mWindow,
-		GCForeground | GCBackground | GCFont,
-		&textColorValues
-	);
-}
+		this->mFont = XLoadQueryFont(
+			this->mConfig.display,
+			"6x13"
+		);
 
-void UITextBox::OnKeyPress(IWindow* sender, XEvent& event) {
-	this->ITextBox::OnKeyPress(sender, event);
+		textColorValues.foreground = exactTextColor.pixel;
+		textColorValues.background = this->mConfig.background;
+		textColorValues.font = this->mFont->fid;
 
-	char buffer[8];
+		this->mContext = XCreateGC(
+			this->mConfig.display,
+			this->mWindow,
+			GCForeground | GCBackground | GCFont,
+			&textColorValues
+		);
+	}
 
-	int count = XLookupString(
-		&event.xkey,
-		buffer,
-		sizeof(buffer),
-		NULL,
-		NULL
-	);
+	void UITextBox::OnKeyPress(IWindow* sender, XEvent& event) {
+		this->ITextBox::OnKeyPress(sender, event);
 
-	switch (count) {
-		case 0: break;
-		case 1: {
-			char c = buffer[0];
+		char buffer[8];
 
-			switch (c) {
-				case 8: {
-					if (0 != this->mContent.size()) {
-						this->mContent.pop_back();
-					}
-				} break;
-				default: {
-					switch (this->mType) {
-						case ETextBoxType::Text:
-						case ETextBoxType::Password: {
-							this->mContent.push_back(c);
-						} break;
-						case ETextBoxType::Number: {
-							if ((c >= '0' && c <= '9')
+		int count = XLookupString(
+			&event.xkey,
+			buffer,
+			sizeof(buffer),
+			NULL,
+			NULL
+		);
+
+		switch (count) {
+			case 0: break;
+			case 1: {
+				char c = buffer[0];
+
+				switch (c) {
+					case 8: {
+						if (0 != this->mContent.size()) {
+							this->mContent.pop_back();
+						}
+					} break;
+					default: {
+						switch (this->mType) {
+							case ETextBoxType::Text:
+							case ETextBoxType::Password: {
+								this->mContent.push_back(c);
+							} break;
+							case ETextBoxType::Number: {
+								if ((c >= '0' && c <= '9')
 								|| (c == '.')
-								|| (c == ',')) {
+								|| (c == ',')
+								|| (c == '-')) {
 
 								this->mContent.push_back(c);
 							}
