@@ -287,6 +287,9 @@ void UIPlot::DrawPlot() {
 
 void UIPlot::Clear() {
 
+	this->mMaxY = std::numeric_limits<double>::quiet_NaN();
+	this->mMinY = std::numeric_limits<double>::quiet_NaN();
+
 	this->mValues.clear();
 
 	for(unsigned int i = 0; i < this->mChildItems.size(); i++) {
